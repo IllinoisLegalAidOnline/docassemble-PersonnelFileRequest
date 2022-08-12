@@ -1,0 +1,534 @@
+metadata:
+  title: Personnel file request
+  short title: Personnel file request
+  comment: This program makes a letter asking your employer to give you a copy of your personnel file.
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.ALToolbox:phone-number-validation.yml
+  - docassemble.ILAO:ilao-interview-framework.yml
+  - docassemble.ILAO:shared-basic-questions.yml
+---
+objects:
+  - user: ALIndividual
+  - employer: ALIndividual
+  - hr_head: ALIndividual
+---
+sections:
+  - review_answers: Review your answers
+---
+# interview order block
+mandatory: True
+code: |
+  ilao_easy_form_title = "Personnel file request"
+  ilao_easy_form_url = "https://www.illinoislegalaid.org/legal-information/personnel-file-request"
+  sees_nav_bar
+  set_progress(5)
+  how_to_use
+  #if accept == False:
+    #not_legal_advice
+  accept_terms
+  employer_form
+  set_progress(20)
+  if enough_employees == False:
+    too_few
+  employer.name.first
+  hiring_date
+  if employment_status == "not_work":
+    if end_date_today_check.years > 1 :
+      end_date_today_error
+  set_progress(40)
+  if hr_known == True:
+    hr_head.name.first
+  if employer.address.state != "IL":
+    worked_in_illinois
+    if worked_in_illinois == False:
+      do_not_qualify_location
+  user.name.first
+  set_progress(60)
+  user.address.address
+  if include_phone_number == True:
+    user.phone_number
+  if include_email_address == True:
+    user.email
+  set_progress(80)
+  mail_date
+  if add_signature == True:
+    user.signature
+  set_progress(100)
+  get_docs_screen
+---
+id: welcome
+question: |
+  Personnel file request
+subquestion: |
+  Welcome to Illinois Legal Aid Online's **Personnel file request** Easy Form.
+
+  This program makes a letter that asks your employer to provide you with a copy of their personnel file.
+field: sees_nav_bar
+---
+id: instructions
+continue button field: how_to_use
+question: |
+  Instructions
+subquestion: |
+  You can use this program if:
+  
+  * You have worked for the specified employer within the past year, and
+  * Your employer must have 5 or more employees, not including family members.
+  
+  To use this program you will need to know:
+
+  * Your employer's name, address, and phone number, and
+  * The date you were hired.
+
+  Set aside 5 to 10 minutes to finish this program. You can log in and save your work to return to later. 
+  
+  ${ collapse_template(help_example) }  
+
+  Click on **{green words :question-circle:}** to learn what they mean. Some questions have a ${ fa_icon("question-circle", color_css="#0dcaf0" ) } that also gives help.
+---
+template: help_example
+
+subject: |
+
+  **You can expand sections like this to show more information.**
+
+content: |  
+
+  This is an example of help. Click again to hide.
+---
+id: next steps
+continue button field: employer_form
+question: |
+  After you finish this program
+subquestion: |
+  After you download your letter, you must deliver it to your employer.
+
+  **Note:** Your employer may have their own form they provide for requesting copies of personnel files. If they do, they may respond to your letter by telling you you need to use their form.
+---
+id: accept terms
+question: |
+  Terms of use
+subquestion: |
+  This program does not provide legal advice. It does not take the place of advice from a lawyer.
+
+  Using this program does not create an attorney-client relationship between you and Illinois Legal Aid Online or its employees.
+
+  ${ collapse_template(get_legal_help) }  
+
+fields:
+  - To continue, you must accept the [terms of use](https://www.illinoislegalaid.org/about/terms-of-use).: accept
+    datatype: checkboxes
+    none of the above: False
+    minlength: 1
+    choices:
+      - I accept the terms of use.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use.
+continue button field: accept_terms
+---
+template: get_legal_help
+subject: |
+  **What if I need legal advice?**
+content: |  
+  If you have questions or concerns about your legal problem and want legal advice you should talk to a lawyer.
+ 
+  Use [Get Legal Help](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+---
+id: your name
+question: |
+  What is your name?
+fields:
+  - First: user.name.first
+  - Middle: user.name.middle
+    required: False
+  - Last: user.name.last
+---
+id: employee count
+question: |
+  Does the employer have more than five employees?
+subquestion: |
+  Family members of the employer do not count.
+fields:
+  - no label: enough_employees
+    datatype: yesnoradio
+---
+id: less than 5 employees
+continue button field: too_few
+question: |
+  Employer has too few employees
+subquestion: |
+  The Illinois Personnel Record Review Act only applies to employers who have more than 5 employees.
+  
+  This program can still make a letter for you, but your employer may be able to ignore it. You may want to [Get Legal Help](https://www.illinoislegalaid.org/get-legal-help)
+---
+id: your address
+question: |
+  What is your address?
+subquestion: |
+  This is the address you will ask your employer to mail the personnel file to.
+fields:
+  - Street address: user.address.address
+    address autocomplete: True
+  - Address line 2: user.address.unit
+    required: False
+  - City: user.address.city
+  - State: user.address.state
+    code: |
+      states_list() 
+  - ZIP code: user.address.zip
+---
+id: include phone
+question: |
+  Do you want to include your phone number in your letter?
+fields:
+  - no label: include_phone_number
+    datatype: yesnoradio
+---
+id: your phone
+question: |
+  What is your phone number?
+fields:
+  - Phone number: user.phone_number
+    datatype: al_international_phone
+---
+id: include email
+question: |
+  Do you want to include your email address in your letter?
+fields:
+  - no label: include_email_address
+    datatype: yesnoradio
+---
+id: your email
+question: |
+  What is your email address?
+fields: 
+  - Email: user.email
+    datatype: email
+---
+sets:
+  - employer.name.first
+id: employer name
+question: |
+  What is the name of your employer?
+fields:
+  - code: |
+      employer.name_fields(person_or_business='unsure')
+---
+id: employer address
+question: |
+  What is ${ employer.name.full(middle='full')}'s address?
+fields:
+  - Street address: employer.address.address
+    address autocomplete: True
+  - Address line 2: employer.address.unit
+    required: False
+  - City: employer.address.city
+  - State: employer.address.state
+    code: |
+      states_list()
+    default: IL 
+  - ZIP code: employer.address.zip
+---
+id: out of state employer
+question: |
+  Did you work for ${ employer.name.full(middle='full') } in Illinois?
+yesno: worked_in_illinois
+---
+id: out of state end
+event: do_not_qualify_location
+question: |
+  Employer does not qualify
+subquestion: |
+  The Illinois Personnel Record Review Act only applies to workplaces in Illinois.
+buttons:
+  - Exit: exit
+  - Restart: restart
+---
+id: knows hr name
+question: |
+  Do you know who is in charge of Human Resources at ${ employer.name.full(middle='full')}?
+subquestion: |
+  This is usually the person who leads hiring and payroll. Their job title could be Director of Human Resources, Office Manager, or Administrator.
+fields:
+  - no label: hr_known
+    datatype: yesnoradio
+---
+id: hr name
+question: |
+  Who is the Director of Human Resources at ${ employer.name.full(middle='full') }?
+subquestion: |
+  If you do not know their job title, leave this blank.
+fields:
+  - First name: hr_head.name.first
+  - Middle name: hr_head.name.middle
+    required: False
+  - Last name: hr_head.name.last
+  - Job title: hr_head.job_title
+    required: False
+---
+id: hire date
+question: |
+  When were you hired?
+subquestion: |
+  If you do not know the exact date, enter the first day of the month you began work.
+fields:
+  - Hiring date: hiring_date
+    datatype: date
+    max: ${ today() }
+---
+#code: |
+  #hiring_date_check = date_difference(starting=hiring_date, ending=today())
+---
+#id: Hire Date Error Message
+#event: hire_date_error
+#question: |
+  #The date you have entered is in the future. Please click the Back button and correct the date.
+---
+id: status
+question: |
+  What is your current employment status with ${employer.name.full(middle='full')}?
+field: employment_status
+choices:
+  - I work for them now.: work
+  - I am on a leave of absence, but I have the right to return to work.: on_leave
+  - I am laid off but subject to recall.: laid_off
+  - I no longer work for this employer.: not_work
+---
+id: end date
+question: |
+  When did your employment end?
+fields:
+  - End date: end_date
+    datatype: date
+    max: ${ today() }
+    min: ${ hiring_date}
+---
+code: |
+  end_date_today_check = date_difference(starting=end_date, ending=today())
+  #end_date_hire_check = date_difference(starting=hiring_date, ending=end_date)
+---
+id: too long
+event: end_date_today_error
+question: |
+  Too much time has passed
+subquestion: |
+ You must have worked for an employer within the past year to request a personnel file under the Illinois Personnel Record Review Act.
+buttons:
+  - Exit: exit
+  - Restart: restart
+---
+#id: Hiring Date to End Date Error
+#event: end_date_hire_error
+#question: |
+  #The employment end date you entered is before the hiring date you entered. Please click the Back button and correct the dates.
+---
+id: mail date
+question: |
+  When will you mail this letter to ${ employer.name.full(middle='full') }?
+subquestion: |
+  This date will appear on your letter.
+fields:
+  - Mail date: mail_date
+    datatype: date
+    min: ${ today() }
+---
+id: add signature
+question: |
+  Do you want to add your signature to your letter?
+subquestion: |
+  If you answer yes, you can add a signature using your device.
+fields:
+  - "Add signature?": add_signature
+    datatype: yesnoradio
+---
+id: signature
+question: |
+  Sign your name
+subquestion: |
+  Use the mouse or touchpad on your computer or sign with your finger on your phone.
+signature: user.signature
+under: |
+  ${ user.name.full(middle='full') }
+---
+id: get docs screen
+event: get_docs_screen
+question: |
+  Download
+subquestion: |
+  Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
+  
+  Read the instructions to learn what to do next.
+
+  Thank you for using ILAO Easy Forms!
+  
+  ${ action_button_html(url_action('review_answers'), label=':edit: Make changes', color='success', size="md") }
+
+  ${ al_user_bundle.download_list_html() }
+ 
+  &nbsp;
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+  
+  **Note:** This program does not send your request to your employer. You will need to do this yourself.
+
+  Thank you for using ILAO Easy Forms!
+under: |
+  % if not user_logged_in():
+  [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [register](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
+  % endif
+
+ 
+  ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
+#buttons:
+  #- Exit: exit
+---
+generic object: ALDocumentBundle
+template: x.send_email_template
+subject: |
+  Personnel file request
+content: |
+  Your forms are attached.
+  
+  Thanks for using ILAO Easy Forms!
+  
+  [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
+---
+#code: |
+  #i = 1
+---
+#code: |
+  #request.always_enabled = True
+  #request.title = "Personnel File Request"
+---
+attachment:
+  name: Personnel File Request Letter
+  variable name: letter[i]
+  filename: personnel_file_request_letter
+  docx template file: PersonnelFileRequestLetterDATemplate.docx
+---
+attachment:
+  name: Personnel File Request Instructions
+  variable name: instructions[i]
+  filename: personnel_file_request_instructions
+  docx template file: Personnel_File_Request_DA_Instructions.docx
+---
+objects:
+  - letter: ALDocument.using(title="Letter", filename="letter", enabled=True, has_addendum=False)
+  - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, letter], filename="personnel_file_request.pdf", title="Download all forms")
+  - al_court_bundle: ALDocumentBundle.using(elements=[instructions letter], filename="personnel_file_request.pdf", title="Request do i see this?")
+---
+id: review screen
+event: review_answers
+question: |
+  Review screen
+subquestion: |
+  Edit your answers below.
+review: 
+  - Edit: employer.name.first
+    button: |
+      **Employer's name:**
+      ${employer.name.full(middle='full')}
+  - Edit: hiring_date
+    button: |
+      ** Your hiring date:**
+      ${hiring_date}
+  - Edit: employment_status
+    button: |
+      **Your current employment status:**     
+      % if employment_status == "work":
+      
+        * I work for them now.
+      % endif
+      % if employment_status == "on_leave":
+      
+        * I am on a leave of absence, but I have the right to return to work.
+      % endif
+      % if employment_status == "laid_off":
+      
+        * I am laid off but subject to recall.
+      % endif
+      % if employment_status == "not_work":
+      
+        * I no longer work for this employer.
+      % endif
+  - Edit: end_date
+    button: |
+      **Your end date:**
+      ${end_date}
+    show if: employment_status == "not_work"
+  - Edit: hr_known
+    button: |
+      **Do you know the name of the person in charge of Human Resources (HR)? ** 
+      ${ word(yesno(hr_known)) }
+  - Edit: hr_head.name.first
+    button: |
+      **Person in charge of HR: (Edit to change name and title)**
+      % if hr_head.job_title == "":
+
+        * **Name:** ${hr_head.name.full(middle='full')}
+        * **Title:**
+      % endif
+      % if hr_head.job_title != "":
+      
+        * **Name:** ${hr_head.name.full(middle='full')}
+        * **Title:** ${hr_head.job_title}
+      % endif
+#      % if hr_head.job_title == "":
+#        **Head of Human Resources:**
+#        ${hr_head.name.full(middle="full")}
+#      % endif
+#      % if hr_head.job_title != "":
+#        **${hr_head.job_title}:**
+#        ${hr_head.name.full(middle="full")}
+#      % endif
+    show if: hr_known
+  - Edit: employer.address.address
+    button: |
+      **Employer's address:**
+      ${employer.address.on_one_line(bare=True)}
+  - Edit: user.name.first
+    button: |
+      **Your name:**
+      ${user.name.full(middle="full")}
+  - Edit: user.address.address
+    button: |
+      **Your address:**
+      ${user.address.on_one_line(bare=True)}
+  - Edit: include_phone_number
+    button: |
+      **Do you want to include your phone number in your letter?** 
+      ${word(yesno(include_phone_number)) }
+  - Edit: user.phone_number
+    button: |
+      **Your phone number:**
+      ${phone_number_formatted(user.phone_number)}
+    show if: include_phone_number
+  - Edit: include_email_address
+    button: |
+      **Do you want to include your e-mail address in your letter?** 
+      ${word(yesno(include_email_address)) }
+  - Edit: user.email
+    button: |
+      **Your e-mail address:**
+      ${user.email}
+    show if: include_email_address
+  - Edit: mail_date
+    button: |
+      **The date you will mail your letter:**
+      ${mail_date}
+  - Edit: add_signature
+    button: |
+      **Do you want to add an electronic signature?**
+      ${word(yesno(add_signature))}
+  - Edit: user.signature
+    button: |
+      **Signature:**
+      
+      ${ user.signature }
+    show if: add_signature
