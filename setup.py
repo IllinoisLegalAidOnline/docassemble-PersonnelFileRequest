@@ -6,6 +6,7 @@ from distutils.util import convert_path
 
 standard_exclude = ('*.pyc', '*~', '.*', '*.bak', '*.swp*')
 standard_exclude_directories = ('.*', 'CVS', '_darcs', './build', './dist', 'EGG-INFO', '*.egg-info')
+
 def find_package_data(where='.', package='', exclude=standard_exclude, exclude_directories=standard_exclude_directories):
     out = {}
     stack = [(convert_path(where), '', package)]
@@ -43,9 +44,9 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.PersonnelFileRequest',
-      version='0.0.1',
+      version='0.0.6',
       description=('This program generates a letter asking for a copy of personnel file.'),
-      long_description='# docassemble.PersonnelFileRequest\n\nThis program generates a letter asking for a copy of personnel file.\n\n## Author\n\nVivian McNaughton, vmcnaughton@illinoislegalaid.org\n\n',
+      long_description='# docassemble.PersonnelFileRequest\r\n\r\nThis program generates a letter asking for a copy of personnel file.\r\n\r\n## Author\r\n\r\nVivian McNaughton, vmcnaughton@illinoislegalaid.org\r\n\r\n',
       long_description_content_type='text/markdown',
       author='Vivian McNaughton',
       author_email='vmcnaughton@illinoislegalaid.org',
