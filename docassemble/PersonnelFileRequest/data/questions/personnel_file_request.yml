@@ -86,7 +86,7 @@ subquestion: |
   You can use this program if:
   
   * You have worked for the specified employer within the past year, and
-  * Your employer must have 5 or more employees, not including family members.
+  * Your employer has 5 or more employees, not including family members.
   
   To use this program you will need to know:
 
@@ -154,7 +154,7 @@ subquestion: |
   % if response_method == "physical":
   This is the address you will ask your employer to mail the personnel file to.
   % else:
-  You do not have to include a mailing address if you want ${employer.name.full(middle='full')} to email the personnel file. However, if you send this request before January 1, 2024, they may be able to choose to mail you a physical copy instead.
+  You do not have to include a mailing address if you want ${employer.name.full(middle='full')} to email the personnel file. However they may choose to mail you a physical copy instead.
   % endif
 fields:
   - Street address: user.address.address
@@ -311,6 +311,10 @@ fields:
 id: response method
 question: |
   Do you want ${employer.name.full(middle='full')} to email their personnel file to you?
+subquestion: |
+  If ${employer.name.full(middle='full')} mails the file to you, they can charge your for copying costs.
+  
+  Your employer can also choose to let you view it in person.
 field: response_method
 choices:
   - Yes: email
