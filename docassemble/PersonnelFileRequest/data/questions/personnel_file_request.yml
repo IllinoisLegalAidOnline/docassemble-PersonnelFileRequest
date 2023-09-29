@@ -525,6 +525,7 @@ review:
       ${ user.signature }
     show if: add_signature
 ---
+section: Employer information
 id: review employer
 event: section_employer
 question: |
@@ -599,6 +600,7 @@ review:
       No
       % endif 
 ---
+section: Your information
 id: review user
 event: section_user
 question: |
