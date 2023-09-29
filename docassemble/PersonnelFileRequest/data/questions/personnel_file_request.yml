@@ -40,9 +40,10 @@ code: |
   employer_form
   set_progress(20)
   nav.set_section('section_employer')
+  
+  employer.name.first
   if enough_employees == False:
     too_few
-  employer.name.first
   hiring_date
   if employment_status == "not_work":
     if end_date_today_check.years > 1 :
@@ -67,7 +68,23 @@ code: |
     user.signature
   set_progress(100)
   nav.set_section('section_download')
+  statute_required
   get_docs_screen
+---
+depends on:
+  - enough_employees
+  - end_date_today_check
+  - employment_status
+code: |
+  if enough_employees == False:
+    statute_required = False
+  elif employment_status == "not_work":
+    if end_date_today_check.years > 1 :
+      statute_required = False
+    else:
+      statute_required = True
+  else:
+    statute_required = True
 ---
 id: welcome
 question: |
@@ -75,7 +92,7 @@ question: |
 subquestion: |
   Welcome to Illinois Legal Aid Online's **Personnel file request** Easy Form.
 
-  This program makes a letter that asks your employer to provide you with a copy of their personnel file on you.
+  This program creates a letter that asks your employer to provide you with a copy of your personnel file.
 field: sees_nav_bar
 ---
 id: how to use
@@ -118,7 +135,7 @@ subquestion: |
   
   Your employer may charge you a fee for the cost of making a copy of the record.
   
-  **Note:** Your employer may have their own form they provide for requesting copies of personnel files. If they do, they may respond to your letter by telling you you need to use their form.
+  **Note:** Your employer may have their own form they provide for requesting copies of personnel files. If they do, they may respond to your letter by telling you to use their form.
 ---
 id: your name
 question: |
@@ -238,7 +255,7 @@ id: knows hr name
 question: |
   Do you know who is in charge of Human Resources at ${ employer.name.full(middle='full')}?
 subquestion: |
-  This is usually the person who leads hiring and payroll. Their job title could be Director of Human Resources, Office Manager, or Administrator.
+  This is usually the person who manages hiring and payroll.. Their job title could be Director of Human Resources, Office Manager, or Administrator.
 fields:
   - no label: hr_known
     datatype: yesnoradio
@@ -289,14 +306,15 @@ code: |
   end_date_today_check = date_difference(starting=end_date, ending=today())
 ---
 id: too long
-event: end_date_today_error
+continue button field: end_date_today_error
 question: |
   Too much time has passed
 subquestion: |
- You must have worked for an employer within the past year to request a personnel file under the Illinois Personnel Record Review Act.
-buttons:
-  - Exit: exit
-  - Restart: restart
+ You must have worked for an employer within the past year to request a personnel file under the Illinois Personnel Record Review Act. 
+ 
+ This program can still make a letter asking for your personnel file, but your employer may not be required to give you a copy. 
+ 
+ If your employer denies your request, you have options. You may be able to file a FOIA request or a subpoena request. If you want to find a lawyer, use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help).
 ---
 id: mail date
 question: |
@@ -410,6 +428,10 @@ review:
     button: |
       **Employer's name:**
       ${employer.name.full(middle='full')}
+  - Edit: enough_employees
+    button: |
+      **Does ${employer.name.full(middle='full')} have more than 6 employees?**
+      ${word(yesno(enough_employees))}
   - Edit: hiring_date
     button: |
       **Your hiring date:**
@@ -514,6 +536,10 @@ review:
     button: |
       **Employer's name:**
       ${employer.name.full(middle='full')}
+  - Edit: enough_employees
+    button: |
+      **Does ${employer.name.full(middle='full')} have more than 6 employees?**
+      ${word(yesno(enough_employees))}
   - Edit: hiring_date
     button: |
       **Your hiring date:**
