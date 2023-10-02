@@ -45,9 +45,11 @@ code: |
   if enough_employees == False:
     too_few
   hiring_date
-  if employment_status == "not_work":
-    if end_date_today_check.years > 1 :
-      end_date_today_error
+  if employment_status == "not_work" or employment_status == "laid_off":
+    end_date_today_check
+    if employment_status == "not_work":
+      if end_date_today_check.years > 1 :
+        end_date_today_error
   set_progress(40)
   if hr_known == True:
     hr_head.name.first
@@ -295,13 +297,20 @@ choices:
 ---
 id: end date
 question: |
+  % if employment_status == "not_work":
   When did your employment end?
+  % elif employment_status == "laid_off":
+  When were you laid off?
+  % endif
 fields:
   - End date: end_date
     datatype: date
     max: ${ today() }
     min: ${ hiring_date}
 ---
+depends on:
+  - end_date
+  - employment_status
 code: |
   end_date_today_check = date_difference(starting=end_date, ending=today())
 ---
@@ -459,7 +468,7 @@ review:
     button: |
       **Your end date:**
       ${end_date}
-    show if: employment_status == "not_work"
+    show if: employment_status == "not_work" or employment_status == "laid_off"
   - Edit: hr_known
     button: |
       **Do you know the name of the person in charge of Human Resources (HR)?** 
@@ -568,7 +577,7 @@ review:
     button: |
       **Your end date:**
       ${end_date}
-    show if: employment_status == "not_work"
+    show if: employment_status == "not_work" or employment_status == "laid_off"
   - Edit: hr_known
     button: |
       **Do you know the name of the person in charge of Human Resources (HR)?** 
@@ -643,7 +652,7 @@ review:
     button: |
       **Your end date:**
       ${end_date}
-    show if: employment_status == "not_work"
+    show if: employment_status == "not_work" or employment_status == "laid_off"
   - Edit: user.phone_number
     button: |
       **Your phone number:**
