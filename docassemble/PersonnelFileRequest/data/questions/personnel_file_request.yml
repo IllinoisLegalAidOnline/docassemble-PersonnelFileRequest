@@ -295,7 +295,7 @@ choices:
   - I am laid off but subject to recall.: laid_off
   - I no longer work for this employer.: not_work
 ---
-id: end date
+id: last day working for employer
 question: |
   % if employment_status == "not_work":
   When did your employment end?
@@ -345,7 +345,7 @@ subquestion: |
 field: response_method
 choices:
   - Yes: email
-  - No, I want them to mail a physical copy: physical
+  - No, I want them to mail a physical copy.: physical
 ---
 id: add signature
 question: |
@@ -466,7 +466,7 @@ review:
       % endif
   - Edit: end_date
     button: |
-      **Your end date:**
+      **Last day working for employer:**
       ${end_date}
     show if: employment_status == "not_work" or employment_status == "laid_off"
   - Edit: hr_known
@@ -575,7 +575,7 @@ review:
       % endif
   - Edit: end_date
     button: |
-      **Your end date:**
+      **Last day working for employer:**
       ${end_date}
     show if: employment_status == "not_work" or employment_status == "laid_off"
   - Edit: hr_known
@@ -650,7 +650,7 @@ review:
       % endif
   - Edit: end_date
     button: |
-      **Your end date:**
+      **Last day working for employer:**
       ${end_date}
     show if: employment_status == "not_work" or employment_status == "laid_off"
   - Edit: user.phone_number
