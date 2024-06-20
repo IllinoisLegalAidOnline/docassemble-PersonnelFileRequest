@@ -574,7 +574,7 @@ review:
     show if: add_signature
 ---
 section: Employer information
-id: review employer
+id: employer review screen
 event: section_employer
 question: |
   Employer information
@@ -649,7 +649,7 @@ review:
       % endif 
 ---
 section: Your information
-id: review user
+id: user review screen
 event: section_user
 question: |
   Your information
