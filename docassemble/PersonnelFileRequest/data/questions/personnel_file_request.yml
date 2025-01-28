@@ -145,7 +145,7 @@ subquestion: |
   * Your employer's name, address, and phone number, and
   * The date you were hired.
 
-  Set aside 5 to 10 minutes to finish this program. You can log in and save your work to return to later. 
+  Set aside 5 to 10 minutes to finish this program. You can log in and save your work to continue later. 
   
   ${ collapse_template(help_example) }  
 
