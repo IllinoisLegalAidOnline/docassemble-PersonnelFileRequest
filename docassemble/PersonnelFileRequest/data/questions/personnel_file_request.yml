@@ -166,11 +166,11 @@ continue button field: employer_form
 question: |
   After you finish this program
 subquestion: |
-  After you download your letter, you must deliver it to your employer. You can send it via physical mail or e-mail.
+  After you download your letter, you must deliver it to your employer. You can send it by physical mail, email, or text message.
   
   Your employer may charge you a fee for the cost of making a copy of the record.
   
-  **Note:** Your employer may have their own form they provide for requesting copies of personnel files. If they do, they may respond to your letter by telling you to use their form.
+  **Note:** Your employer may have their own form they provide for requesting copies of personnel files. If they do, they may respond to your letter by asking you to use their form.
 ---
 id: your name
 question: |
@@ -557,7 +557,7 @@ review:
       ${phone_number_formatted(user.phone_number)}
   - Edit: user.email
     button: |
-      **Your e-mail address:**
+      **Your email address:**
       % if user.email != "":
       ${user.email}
       % else:
@@ -703,7 +703,7 @@ review:
       ${phone_number_formatted(user.phone_number)}
   - Edit: user.email
     button: |
-      **Your e-mail address:**
+      **Your email address:**
       % if user.email != "":
       ${user.email}
       % else:
