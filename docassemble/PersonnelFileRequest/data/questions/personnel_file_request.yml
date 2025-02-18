@@ -149,13 +149,13 @@ subquestion: |
   
   ${ collapse_template(help_example) }  
 
-  Click on **{green words}** to learn what they mean. Some questions have a question mark in a circle ${ fa_icon("question-circle", color_css="#0dcaf0" ) } that also gives help.
+  Click on **{green words}** to learn what they mean. Some pages have a question mark in a circle ${ fa_icon("question-circle", color_css="#0dcaf0" ) } that helps explain things.
 ---
 template: help_example
 
 subject: |
 
-  **You can expand sections like this to show more information.**
+  **You can click sections like this to show more information.**
 
 content: |  
 
@@ -172,14 +172,23 @@ subquestion: |
   
   **Note:** Your employer may have their own form they provide for requesting copies of personnel files. If they do, they may respond to your letter by asking you to use their form.
 ---
-id: your name
+id: user name
 question: |
   What is your name?
+subquestion: |
+    If you don't have a first name and a last name, you can enter your name in the field labeled **First** and leave the other fields blank.
 fields:
   - First: user.name.first
   - Middle: user.name.middle
     required: False
   - Last: user.name.last
+    required: False
+  - Suffix: user.name.suffix
+    help: |
+      Some names have a suffix after the last name, such as "Senior," "III," or "Jr." If your name does not have a suffix, you can leave this blank.
+    code: |
+      name_suffix()
+    required: False
 ---
 id: employee count
 question: |
@@ -248,9 +257,17 @@ sets:
 id: employer name
 question: |
   What is the name of your employer?
+subquestion: |
+  ${collapse_template(long_name_help)}
 fields:
   - code: |
       employer.name_fields(person_or_business='unsure')
+---
+template: long_name_help
+subject: |
+  **What if I need more space?**
+content: |
+  If the person has a long name like "Jane Agnes Smith, CPA," select **Business or organization**. You can then enter the full name and title.
 ---
 id: employer address
 question: |
@@ -290,7 +307,7 @@ id: knows hr name
 question: |
   Do you know who is in charge of Human Resources at ${ employer.name.full(middle='full')}?
 subquestion: |
-  This is usually the person who manages hiring and payroll.. Their job title could be Director of Human Resources, Office Manager, or Administrator.
+  This is usually the person who manages hiring and payroll. Their job title could be Director of Human Resources, Office Manager, or Administrator.
 fields:
   - no label: hr_known
     datatype: yesnoradio
@@ -299,12 +316,21 @@ id: hr name
 question: |
   Who is the Director of Human Resources at ${ employer.name.full(middle='full') }?
 subquestion: |
-  If you do not know their job title, leave this blank.
+  If you do not know their job title, you can leave that field blank.
+
+   If they don't have a first name and a last name, you can enter their name in the field labeled **First** and leave the other fields blank.
 fields:
   - First name: hr_head.name.first
   - Middle name: hr_head.name.middle
     required: False
   - Last name: hr_head.name.last
+    required: False
+  - Suffix: hr_head.name.suffix
+    help: |
+      Some names have a suffix after the last name, such as "Senior," "III," or "Jr." If your name does not have a suffix, you can leave this blank.
+    code: |
+      name_suffix()
+    required: False
   - Job title: hr_head.job_title
     required: False
 ---
