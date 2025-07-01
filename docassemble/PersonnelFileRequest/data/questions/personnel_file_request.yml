@@ -215,7 +215,7 @@ subquestion: |
   % if response_method == "physical":
   This is the address you will ask your employer to mail the personnel file to.
   % else:
-  You do not have to include a mailing address if you want ${employer.name.full(middle='full')} to email the personnel file. However they may choose to mail you a physical copy instead.
+  You do not have to include a mailing address if you want ${employer.name_full()} to email the personnel file. However they may choose to mail you a physical copy instead.
   % endif
 fields:
   - Street address: user.address.address
@@ -271,7 +271,7 @@ content: |
 ---
 id: employer address
 question: |
-  What is ${ employer.name.full(middle='full')}'s address?
+  What is ${ employer.name_full()}'s address?
 fields:
   - Street address: employer.address.address
     address autocomplete: True
@@ -287,9 +287,9 @@ fields:
 id: out of state employer
 question: |
   % if employment_status == "work":
-  Do you work for ${ employer.name.full(middle='full') } in Illinois?
+  Do you work for ${ employer.name_full() } in Illinois?
   % else:
-  Did you work for ${ employer.name.full(middle='full') } in Illinois?
+  Did you work for ${ employer.name_full() } in Illinois?
   % endif
 yesno: worked_in_illinois
 ---
@@ -305,7 +305,7 @@ buttons:
 ---
 id: knows hr name
 question: |
-  Do you know who is in charge of Human Resources at ${ employer.name.full(middle='full')}?
+  Do you know who is in charge of Human Resources at ${ employer.name_full()}?
 subquestion: |
   This is usually the person who manages hiring and payroll. Their job title could be Director of Human Resources, Office Manager, or Administrator.
 fields:
@@ -314,7 +314,7 @@ fields:
 ---
 id: hr name
 question: |
-  Who is the Director of Human Resources at ${ employer.name.full(middle='full') }?
+  Who is the Director of Human Resources at ${ employer.name_full() }?
 subquestion: |
   If you do not know their job title, you can leave that field blank.
 
@@ -346,7 +346,7 @@ fields:
 ---
 id: status
 question: |
-  What is your current employment status with ${employer.name.full(middle='full')}?
+  What is your current employment status with ${employer.name_full()}?
 field: employment_status
 choices:
   - I work for them now.: work
@@ -386,7 +386,7 @@ subquestion: |
 ---
 id: mail date
 question: |
-  When will you mail this letter to ${ employer.name.full(middle='full') }?
+  When will you mail this letter to ${ employer.name_full() }?
 subquestion: |
   This date will appear on your letter.
 fields:
@@ -396,9 +396,9 @@ fields:
 ---
 id: response method
 question: |
-  Do you want ${employer.name.full(middle='full')} to email their personnel file to you?
+  Do you want ${employer.name_full()} to email their personnel file to you?
 subquestion: |
-  If ${employer.name.full(middle='full')} mails the file to you, they can charge your for copying costs.
+  If ${employer.name_full()} mails the file to you, they can charge your for copying costs.
   
   Your employer can also choose to let you view it in person.
 field: response_method
@@ -422,7 +422,7 @@ subquestion: |
   Use the mouse or touchpad on your computer or sign with your finger on your phone.
 signature: user.signature
 under: |
-  ${ user.name.full(middle='full') }
+  ${ user.name_full() }
 ---
 id: forms assembling
 continue button field: forms_assembling
@@ -506,10 +506,10 @@ review:
   - Edit: employer.name.first
     button: |
       **Employer's name:**
-      ${employer.name.full(middle='full')}
+      ${employer.name_full()}
   - Edit: enough_employees
     button: |
-      **Does ${employer.name.full(middle='full')} have more than 6 employees?**
+      **Does ${employer.name_full()} have more than 6 employees?**
       ${word(yesno(enough_employees))}
   - Edit: hiring_date
     button: |
@@ -548,12 +548,12 @@ review:
       **Person in charge of HR: (Edit to change name and title)**
       % if hr_head.job_title == "":
 
-        * **Name:** ${hr_head.name.full(middle='full')}
+        * **Name:** ${hr_head.name_full()}
         * **Title:**
       % endif
       % if hr_head.job_title != "":
       
-        * **Name:** ${hr_head.name.full(middle='full')}
+        * **Name:** ${hr_head.name_full()}
         * **Title:** ${hr_head.job_title}
       % endif
     show if: hr_known
@@ -572,7 +572,7 @@ review:
   - Edit: user.name.first
     button: |
       **Your name:**
-      ${user.name.full(middle="full")}
+      ${user.name_full()}
   - Edit: user.address.address
     button: |
       **Your address:**
@@ -615,10 +615,10 @@ review:
   - Edit: employer.name.first
     button: |
       **Employer's name:**
-      ${employer.name.full(middle='full')}
+      ${employer.name_full()}
   - Edit: enough_employees
     button: |
-      **Does ${employer.name.full(middle='full')} have more than 6 employees?**
+      **Does ${employer.name_full()} have more than 6 employees?**
       ${word(yesno(enough_employees))}
   - Edit: hiring_date
     button: |
@@ -657,12 +657,12 @@ review:
       **Person in charge of HR: (Edit to change name and title)**
       % if hr_head.job_title == "":
 
-        * **Name:** ${hr_head.name.full(middle='full')}
+        * **Name:** ${hr_head.name_full()}
         * **Title:**
       % endif
       % if hr_head.job_title != "":
       
-        * **Name:** ${hr_head.name.full(middle='full')}
+        * **Name:** ${hr_head.name_full()}
         * **Title:** ${hr_head.job_title}
       % endif
     show if: hr_known
@@ -690,7 +690,7 @@ review:
   - Edit: user.name.first
     button: |
       **Your name:**
-      ${user.name.full(middle="full")}
+      ${user.name_full()}
   - Edit: user.address.address
     button: |
       **Your address:**
